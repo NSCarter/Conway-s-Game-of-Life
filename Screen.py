@@ -1,6 +1,5 @@
 '''
 ~~~~~To Do~~~~~
-Premade patterns
 Number of generations
 Stable? + number of generations
 Validate something is entered - run
@@ -9,6 +8,8 @@ Help - rules
 Help - How to use
 Pattern validation
 Name of pattern
+Grid lines maybe
+More patterns
 '''
 
 import pygame
@@ -143,11 +144,13 @@ def menuText():
     screenDisplay.blit(text, textpos)
 
 def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, speedValue, sizeOfGridValue, squareList):
+    #If the nameOfPattern button was clicked
     if nameOfPattern.collidepoint(pos):
-        print 'Name of pattern'
         chosen = False
+        #While the user hasn't chosen a pattern
         while chosen == False:
 ##            chosen, squareList = patternMenu()
+            #Display the pattern menu
             chosen = patternMenu()
     elif speed.collidepoint(pos):
         chosen = False
@@ -629,11 +632,8 @@ def patternMenu():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if blinker.collidepoint(pos):
                     chosen  = True
-##                    squareList = ('blinker')
                     x = 'blinker'
                     patterns(x)
-##                    print' blinker'
-##                    return chosen, squareList
                     return chosen
                 elif toad.collidepoint(pos):
                     chosen = True
@@ -655,21 +655,26 @@ def patternMenu():
                     x = 'pentadecathalon'
                     patterns(x)
                     return chosen
-##                elif toad.collidepoint(pos):
-##                    chosen = True
-##                    x = 'toad'
-##                    patterns(x)
-##                    return chosen
-##                elif toad.collidepoint(pos):
-##                    chosen = True
-##                    x = 'toad'
-##                    patterns(x)
-##                    return chosen
-##                elif toad.collidepoint(pos):
-##                    chosen = True
-##                    x = 'toad'
-##                    patterns(x)
-##                    return chosen
+                elif glider.collidepoint(pos):
+                    chosen = True
+                    x = 'glider'
+                    patterns(x)
+                    return chosen
+                elif lightweightSpaceship.collidepoint(pos):
+                    chosen = True
+                    x = 'lightweight spaceship'
+                    patterns(x)
+                    return chosen
+                elif theRPentomino.collidepoint(pos):
+                    chosen = True
+                    x = 'the r pentomino'
+                    patterns(x)
+                    return chosen
+                elif dieHard.collidepoint(pos):
+                    chosen = True
+                    x = 'die hard'
+                    patterns(x)
+                    return chosen
 
         #Boxes
         pygame.draw.rect(screenDisplay, grey,(225,15,550,570))
@@ -686,14 +691,14 @@ def patternMenu():
         pygame.draw.rect(screenDisplay, black,(615,90,115,40),3)
         pentadecathalon = pygame.draw.rect(screenDisplay, white,(240,140,280,40))
         pygame.draw.rect(screenDisplay, black,(240,140,280,40),3)
-##        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
-##        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
-##        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
-##        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
-##        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
-##        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
-##        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
-##        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
+        glider = pygame.draw.rect(screenDisplay, white,(535,140,110,40))
+        pygame.draw.rect(screenDisplay, black,(535,140,110,40),3)
+        lightweightSpaceship = pygame.draw.rect(screenDisplay, white,(240,190,375,40))
+        pygame.draw.rect(screenDisplay, black,(240,191,375,40),3)
+        theRPentomino = pygame.draw.rect(screenDisplay, white,(240,241,282,40))
+        pygame.draw.rect(screenDisplay, black,(240,241,282,40),3)
+        dieHard = pygame.draw.rect(screenDisplay, white,(535,240,145,40))
+        pygame.draw.rect(screenDisplay, black,(535,240,145,40),3)
 
         #Text
         text = sizeFont.render('Select a pattern',1, (black))
@@ -714,18 +719,18 @@ def patternMenu():
         text = sizeFont.render('Pentadecathalon',1, (black))
         textpos = (245,145)
         screenDisplay.blit(text, textpos)
-##        text = sizeFont.render('Glider',1, (black))
-##        textpos = (245,95)
-##        screenDisplay.blit(text, textpos)
-##        text = sizeFont.render('Lightweight Spaceship',1, (black))
-##        textpos = (245,95)
-##        screenDisplay.blit(text, textpos)
-##        text = sizeFont.render('The R-pentomino',1, (black))
-##        textpos = (245,95)
-##        screenDisplay.blit(text, textpos)
-##        text = sizeFont.render('Die hard',1, (black))
-##        textpos = (245,95)
-##        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('Glider',1, (black))
+        textpos = (540,145)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('Lightweight Spaceship',1, (black))
+        textpos = (245,195)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('The R-pentomino',1, (black))
+        textpos = (245,245)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('Die hard',1, (black))
+        textpos = (540,245)
+        screenDisplay.blit(text, textpos)
 
         pygame.display.update()
         clock.tick(11)
@@ -744,6 +749,16 @@ def patterns(x):
     elif x == 'pentadecathalon':
         if sizeOfGridValue > 15:
             pattern = pentadecathalon()
+    elif x == 'glider':
+        pattern = glider()
+    elif x == 'lightweight spaceship':
+        if sizeOfGridValue > 6:
+            pattern = lightweightSpaceship()
+    elif x == 'the r pentomino':
+        pattern = theRPentomino()
+    elif x == 'die hard':
+        if sizeOfGridValue > 6:
+            pattern = dieHard()
     for row in range(len(squareList)):
         for col in range(len(squareList[row])):
             if pattern[row][col] == '*':
@@ -823,8 +838,61 @@ def pentadecathalon():
     f.close()
     return pattern
 
+def glider():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/Glider/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
 
+def lightweightSpaceship():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/Lightweight Spaceship/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
 
+def theRPentomino():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/The R-pentomino/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
+
+def dieHard():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/Die Hard/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
 
 
 def main():

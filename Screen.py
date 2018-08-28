@@ -19,7 +19,7 @@ font = pygame.font.Font('freesansbold.ttf', 16)
 speedFont = pygame.font.Font('freesansbold.ttf', 32)
 sizeFont = pygame.font.Font('freesansbold.ttf', 32)
 #Start value for speed, size of the grid and the square size
-speedValue = 5
+speedValue = 9
 sizeOfGridValue = 10
 #The amount of the screen used for the grid
 gridWidth = 600
@@ -131,7 +131,7 @@ def menuText():
     textpos = (77,440)
     screenDisplay.blit(text, textpos)
 
-def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, speedValue, sizeOfGridValue):
+def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, speedValue, sizeOfGridValue, squareList):
     if nameOfPattern.collidepoint(pos):
         print 'Name of pattern'
     elif speed.collidepoint(pos):
@@ -141,21 +141,21 @@ def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, spee
     elif sizeOfGrid.collidepoint(pos):
         chosen = False
         while chosen == False:
-            chosen, sizeOfGridValue = sizeOfGridMenu(sizeOfGridValue, pos)
-        gridSetup(sizeOfGridValue)
+            chosen, sizeOfGridValue, squareList = sizeOfGridMenu(sizeOfGridValue, pos)
+        gridSetup(sizeOfGridValue, squareList)
     elif start.collidepoint(pos):
         stopped = False
         while not stopped:
-            stopped = startRun(grid, stop)
+            stopped = startRun(grid, stop, sizeOfGridValue)
     elif stop.collidepoint(pos):
         print 'Stop'
     elif step.collidepoint(pos):
-        stepRun(grid)
+        stepRun(grid, sizeOfGridValue)
     elif clear.collidepoint(pos):
         clearGrid()
     else:
         print 'False'
-    return speedValue, sizeOfGridValue
+    return speedValue, sizeOfGridValue, squareList
 
 def speedMenu(speedValue, pos):
     time.sleep(0.1)
@@ -262,7 +262,7 @@ def speedMenu(speedValue, pos):
         pygame.display.update()
         clock.tick(11)
 
-def gridSetup(sizeOfGridValue):
+def gridSetup(sizeOfGridValue, squareList):
     xPos = 0
     yPos = 0
     row = 0
@@ -290,7 +290,7 @@ def squareChange(pos):
                     squareList[row][col].colour = white
                     squareList[row][col].image.fill(white)
 
-def startRun(grid, stop):
+def startRun(grid, stop, sizeOfGridValue):
     end = False
 
     while not end:
@@ -306,9 +306,7 @@ def startRun(grid, stop):
                     stopped = True
                     return stopped
 
-        print grid
-
-        del grid[:]
+        grid = []
 
         for i in range(sizeOfGridValue):
             grid.append([])
@@ -324,35 +322,35 @@ def startRun(grid, stop):
 
         for row in range(sizeOfGridValue):
             tempGrid.append([])
-            for column in range(10):
+            for column in range(sizeOfGridValue):
                 tempGrid[row].append(' ')
 
-        for row in range(10):
-            for column in range(10):
+        for row in range(sizeOfGridValue):
+            for column in range(sizeOfGridValue):
                 count = 0
                 if grid[row][column] == '*':
-                    if row+1 < 10:
+                    if row+1 < sizeOfGridValue:
                         if grid[row+1][column] == '*':
                             count += 1
                     if row-1 > -1:
                         if grid[row-1][column] == '*':
                             count += 1
-                    if column+1 < 10:
+                    if column+1 < sizeOfGridValue:
                         if grid[row][column+1] == '*':
                             count += 1
                     if column-1 > -1:
                         if grid[row][column-1] == '*':
                             count += 1
-                    if column+1 < 10 and row+1 < 10:
+                    if column+1 < sizeOfGridValue and row+1 < sizeOfGridValue:
                         if grid[row+1][column+1] == '*':
                             count += 1
                     if row-1 > -1 and column-1 > -1:
                         if grid[row-1][column-1] == '*':
                             count += 1
-                    if row+1 < 10 and column-1 > -1:
+                    if row+1 < sizeOfGridValue and column-1 > -1:
                         if grid[row+1][column-1] == '*':
                             count += 1
-                    if row-1 > -1 and column+1 < 10:
+                    if row-1 > -1 and column+1 < sizeOfGridValue:
                         if grid[row-1][column+1] == '*':
                             count += 1
 
@@ -362,28 +360,28 @@ def startRun(grid, stop):
                         tempGrid[row][column] = ' '
 
                 elif grid[row][column] == ' ':
-                    if row+1 < 10:
+                    if row+1 < sizeOfGridValue:
                         if grid[row+1][column] == '*':
                             count += 1
                     if row-1 > -1:
                         if grid[row-1][column] == '*':
                             count += 1
-                    if column+1 < 10:
+                    if column+1 < sizeOfGridValue:
                         if grid[row][column+1] == '*':
                             count += 1
                     if column-1 > -1:
                         if grid[row][column-1] == '*':
                             count += 1
-                    if column+1 < 10 and row+1 < 10:
+                    if column+1 < sizeOfGridValue and row+1 < sizeOfGridValue:
                         if grid[row+1][column+1] == '*':
                             count += 1
                     if row-1 > -1 and column-1 > -1:
                         if grid[row-1][column-1] == '*':
                             count += 1
-                    if row+1 < 10 and column-1 > -1:
+                    if row+1 < sizeOfGridValue and column-1 > -1:
                         if grid[row+1][column-1] == '*':
                             count += 1
-                    if row-1 > -1 and column+1 < 10:
+                    if row-1 > -1 and column+1 < sizeOfGridValue:
                         if grid[row-1][column+1] == '*':
                             count += 1
 
@@ -437,35 +435,33 @@ def sizeOfGridMenu(sizeOfGridValue, pos):
                 if size5.collidepoint(pos):
                     sizeOfGridValue = 5
                     chosen  = True
-    ##                clearGrid()
                     squareList = []
-                    return chosen, sizeOfGridValue
+                    return chosen, sizeOfGridValue, squareList
                 elif size10.collidepoint(pos):
                     sizeOfGridValue = 10
                     chosen  = True
-    ##                squareList.empty()
                     squareList = []
-                    return chosen, sizeOfGridValue
+                    return chosen, sizeOfGridValue, squareList
                 elif size25.collidepoint(pos):
                     sizeOfGridValue = 25
                     chosen  = True
                     squareList = []
-                    return chosen, sizeOfGridValue
+                    return chosen, sizeOfGridValue, squareList
                 elif size50.collidepoint(pos):
                     sizeOfGridValue = 50
                     chosen  = True
-                    squareList.empty()
-                    return chosen, sizeOfGridValue
+                    squareList= []
+                    return chosen, sizeOfGridValue, squareList
                 elif size75.collidepoint(pos):
                     sizeOfGridValue = 75
                     chosen  = True
-                    squareList.empty()
-                    return chosen, sizeOfGridValue
+                    squareList = []
+                    return chosen, sizeOfGridValue, squareList
                 elif size100.collidepoint(pos):
                     sizeOfGridValue = 100
                     chosen  = True
-                    squareList.empty()
-                    return chosen, sizeOfGridValue
+                    squareList = []
+                    return chosen, sizeOfGridValue, squareList
 
         #Boxes
         pygame.draw.rect(screenDisplay, white,(325,205,330,190))
@@ -506,7 +502,9 @@ def sizeOfGridMenu(sizeOfGridValue, pos):
         pygame.display.update()
         clock.tick(11)
 
-def stepRun(grid):
+def stepRun(grid, sizeOfGridValue):
+        grid = []
+
         for i in range(sizeOfGridValue):
             grid.append([])
 
@@ -517,39 +515,39 @@ def stepRun(grid):
                 else:
                     grid[row].append(' ')
 
-        del tempGrid[:]
+        tempGrid = []
 
         for row in range(sizeOfGridValue):
             tempGrid.append([])
-            for column in range(10):
+            for column in range(sizeOfGridValue):
                 tempGrid[row].append(' ')
 
-        for row in range(10):
-            for column in range(10):
+        for row in range(sizeOfGridValue):
+            for column in range(sizeOfGridValue):
                 count = 0
                 if grid[row][column] == '*':
-                    if row+1 < 10:
+                    if row+1 < sizeOfGridValue:
                         if grid[row+1][column] == '*':
                             count += 1
                     if row-1 > -1:
                         if grid[row-1][column] == '*':
                             count += 1
-                    if column+1 < 10:
+                    if column+1 <sizeOfGridValue:
                         if grid[row][column+1] == '*':
                             count += 1
                     if column-1 > -1:
                         if grid[row][column-1] == '*':
                             count += 1
-                    if column+1 < 10 and row+1 < 10:
+                    if column+1 < sizeOfGridValue and row+1 < sizeOfGridValue:
                         if grid[row+1][column+1] == '*':
                             count += 1
                     if row-1 > -1 and column-1 > -1:
                         if grid[row-1][column-1] == '*':
                             count += 1
-                    if row+1 < 10 and column-1 > -1:
+                    if row+1 < sizeOfGridValue and column-1 > -1:
                         if grid[row+1][column-1] == '*':
                             count += 1
-                    if row-1 > -1 and column+1 < 10:
+                    if row-1 > -1 and column+1 < sizeOfGridValue:
                         if grid[row-1][column+1] == '*':
                             count += 1
 
@@ -559,28 +557,28 @@ def stepRun(grid):
                         tempGrid[row][column] = ' '
 
                 elif grid[row][column] == ' ':
-                    if row+1 < 10:
+                    if row+1 < sizeOfGridValue:
                         if grid[row+1][column] == '*':
                             count += 1
                     if row-1 > -1:
                         if grid[row-1][column] == '*':
                             count += 1
-                    if column+1 < 10:
+                    if column+1 < sizeOfGridValue:
                         if grid[row][column+1] == '*':
                             count += 1
                     if column-1 > -1:
                         if grid[row][column-1] == '*':
                             count += 1
-                    if column+1 < 10 and row+1 < 10:
+                    if column+1 < sizeOfGridValue and row+1 < sizeOfGridValue:
                         if grid[row+1][column+1] == '*':
                             count += 1
                     if row-1 > -1 and column-1 > -1:
                         if grid[row-1][column-1] == '*':
                             count += 1
-                    if row+1 < 10 and column-1 > -1:
+                    if row+1 < sizeOfGridValue and column-1 > -1:
                         if grid[row+1][column-1] == '*':
                             count += 1
-                    if row-1 > -1 and column+1 < 10:
+                    if row-1 > -1 and column+1 < sizeOfGridValue:
                         if grid[row-1][column+1] == '*':
                             count += 1
 
@@ -589,7 +587,7 @@ def stepRun(grid):
                     else:
                         tempGrid[row][column] = ' '
 
-        del grid [:]
+        grid = []
         grid = tempGrid
 
         for row in range(len(squareList)):
@@ -610,7 +608,7 @@ def main():
             if event.type == pygame.QUIT:
                 end = True
 
-        global speedValue, sizeOfGridValue
+        global speedValue, sizeOfGridValue, squareList
 
         menuBackground()
         nameOfPattern, speed, sizeOfGrid, start, stop, step, clear = menuBoxes()
@@ -623,14 +621,14 @@ def main():
         pos = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if pos < (200,600):
-                speedValue, sizeOfGridValue = button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, speedValue, sizeOfGridValue)
+                speedValue, sizeOfGridValue, squareList = button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, speedValue, sizeOfGridValue, squareList)
             else:
                 squareChange(pos)
 
         pygame.display.update()
         clock.tick(11)
 
-gridSetup(sizeOfGridValue)
+gridSetup(sizeOfGridValue, squareList)
 main()
 pygame.display.quit()
 quit()

@@ -1,3 +1,16 @@
+'''
+~~~~~To Do~~~~~
+Premade patterns
+Number of generations
+Stable? + number of generations
+Validate something is entered - run
+Validate something is entered - step
+Help - rules
+Help - How to use
+Pattern validation
+Name of pattern
+'''
+
 import pygame
 import time
 
@@ -9,7 +22,6 @@ displayHeight = 600
 
 #Colours
 white = (255,255,255)
-blue = (0,155,255)
 black = (0,0,0)
 grey = (128,128,128)
 red = (255,0,0)
@@ -26,9 +38,8 @@ gridWidth = 600
 #Grids used for running through the algorithm
 grid = []
 tempGrid = []
-liveCells = []
 
-#Set the size of the screen. the name of the screen and sefine the clock
+#Set the size of the screen, the name of the screen and define the clock
 screenDisplay = pygame.display.set_mode((displayWidth, displayHeight))
 pygame.display.set_caption('Conway\'s game of life')
 clock = pygame.time.Clock()
@@ -134,6 +145,10 @@ def menuText():
 def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, speedValue, sizeOfGridValue, squareList):
     if nameOfPattern.collidepoint(pos):
         print 'Name of pattern'
+        chosen = False
+        while chosen == False:
+##            chosen, squareList = patternMenu()
+            chosen = patternMenu()
     elif speed.collidepoint(pos):
         chosen = False
         while chosen == False:
@@ -346,7 +361,7 @@ def startRun(grid, stop, sizeOfGridValue):
                             count += 1
                     if row-1 > -1 and column-1 > -1:
                         if grid[row-1][column-1] == '*':
-                            count += 1
+                           count += 1
                     if row+1 < sizeOfGridValue and column-1 > -1:
                         if grid[row+1][column-1] == '*':
                             count += 1
@@ -598,6 +613,219 @@ def stepRun(grid, sizeOfGridValue):
                 else:
                     squareList[row][col].colour = white
                     squareList[row][col].image.fill(white)
+
+def patternMenu():
+    time.sleep(0.1)
+    end = False
+
+    while not end:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                end = True
+                pygame.display.quit()
+                quit()
+
+            pos = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if blinker.collidepoint(pos):
+                    chosen  = True
+##                    squareList = ('blinker')
+                    x = 'blinker'
+                    patterns(x)
+##                    print' blinker'
+##                    return chosen, squareList
+                    return chosen
+                elif toad.collidepoint(pos):
+                    chosen = True
+                    x = 'toad'
+                    patterns(x)
+                    return chosen
+                elif beacon.collidepoint(pos):
+                    chosen = True
+                    x = 'beacon'
+                    patterns(x)
+                    return chosen
+                elif pulsar.collidepoint(pos):
+                    chosen = True
+                    x = 'pulsar'
+                    patterns(x)
+                    return chosen
+                elif pentadecathalon.collidepoint(pos):
+                    chosen = True
+                    x = 'pentadecathalon'
+                    patterns(x)
+                    return chosen
+##                elif toad.collidepoint(pos):
+##                    chosen = True
+##                    x = 'toad'
+##                    patterns(x)
+##                    return chosen
+##                elif toad.collidepoint(pos):
+##                    chosen = True
+##                    x = 'toad'
+##                    patterns(x)
+##                    return chosen
+##                elif toad.collidepoint(pos):
+##                    chosen = True
+##                    x = 'toad'
+##                    patterns(x)
+##                    return chosen
+
+        #Boxes
+        pygame.draw.rect(screenDisplay, grey,(225,15,550,570))
+        pygame.draw.rect(screenDisplay, black,(225,15,550,570),3)
+        pygame.draw.rect(screenDisplay, white,(355,25,270,45))
+        pygame.draw.rect(screenDisplay, black,(355,25,270,45),3)
+        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
+        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
+        toad = pygame.draw.rect(screenDisplay, white,(378,90,85,40))
+        pygame.draw.rect(screenDisplay, black,(378,90,85,40),3)
+        beacon = pygame.draw.rect(screenDisplay, white,(475,90,125,40))
+        pygame.draw.rect(screenDisplay, black,(475,90,125,40),3)
+        pulsar = pygame.draw.rect(screenDisplay, white,(615,90,115,40))
+        pygame.draw.rect(screenDisplay, black,(615,90,115,40),3)
+        pentadecathalon = pygame.draw.rect(screenDisplay, white,(240,140,280,40))
+        pygame.draw.rect(screenDisplay, black,(240,140,280,40),3)
+##        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
+##        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
+##        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
+##        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
+##        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
+##        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
+##        blinker = pygame.draw.rect(screenDisplay, white,(240,90,125,40))
+##        pygame.draw.rect(screenDisplay, black,(240,90,125,40),3)
+
+        #Text
+        text = sizeFont.render('Select a pattern',1, (black))
+        textpos = (365,30)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('Blinker',1, (black))
+        textpos = (245,95)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('Toad',1, (black))
+        textpos = (383,95)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('Beacon',1, (black))
+        textpos = (480,95)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('Pulsar',1, (black))
+        textpos = (620,95)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('Pentadecathalon',1, (black))
+        textpos = (245,145)
+        screenDisplay.blit(text, textpos)
+##        text = sizeFont.render('Glider',1, (black))
+##        textpos = (245,95)
+##        screenDisplay.blit(text, textpos)
+##        text = sizeFont.render('Lightweight Spaceship',1, (black))
+##        textpos = (245,95)
+##        screenDisplay.blit(text, textpos)
+##        text = sizeFont.render('The R-pentomino',1, (black))
+##        textpos = (245,95)
+##        screenDisplay.blit(text, textpos)
+##        text = sizeFont.render('Die hard',1, (black))
+##        textpos = (245,95)
+##        screenDisplay.blit(text, textpos)
+
+        pygame.display.update()
+        clock.tick(11)
+
+def patterns(x):
+    clearGrid()
+    if x == 'blinker':
+        pattern = blinker()
+    elif x == 'toad':
+        pattern = toad()
+    elif x == 'beacon':
+        pattern = beacon()
+    elif x == 'pulsar':
+        if sizeOfGridValue > 15:
+            pattern = pulsar()
+    elif x == 'pentadecathalon':
+        if sizeOfGridValue > 15:
+            pattern = pentadecathalon()
+    for row in range(len(squareList)):
+        for col in range(len(squareList[row])):
+            if pattern[row][col] == '*':
+                squareList[row][col].colour = red
+                squareList[row][col].image.fill(red)
+            else:
+                squareList[row][col].colour = white
+                squareList[row][col].image.fill(white)
+
+def blinker():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/Blinker/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
+
+def toad():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/Toad/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
+
+def beacon():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/Beacon/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
+
+def pulsar():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/Pulsar/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
+
+def pentadecathalon():
+    pattern = []
+    for i in range(sizeOfGridValue):
+        pattern.append([])
+    f = open('Patterns/Pentadecathalon/%d.txt' % tuple([sizeOfGridValue]),'r')
+    count = 0
+    for line in f:
+        for char in line:
+            if char != '\n':
+                pattern[count].append(char)
+        count += 1
+    f.close()
+    return pattern
+
+
+
+
 
 def main():
     end = False

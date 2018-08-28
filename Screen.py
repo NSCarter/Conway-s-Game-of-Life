@@ -2,7 +2,6 @@
 ~~~~~To Do~~~~~
 Help - rules
 Help - How to use
-Name of pattern
 Grid lines maybe
 More patterns
 '''
@@ -109,7 +108,7 @@ def menuBoxes():
 #The text in the menu boxes
 def menuText():
     #Name of pattern
-    text = font.render("Name of", 1, black)
+    text = font.render("Select a", 1, black)
     textpos = (65,25)
     screenDisplay.blit(text, textpos)
     text = font.render("pattern", 1, (black))
@@ -156,11 +155,14 @@ def menuText():
     text = font.render('Stable:', 1, (black))
     textpos = (5,515)
     screenDisplay.blit(text, textpos)
+    #Check if the pattern is stable
     global stableGen
+    #If it isn't display no
     if stable == False:
         text = font.render('No', 1, (black))
         textpos = (75,515)
         screenDisplay.blit(text, textpos)
+    #Otherwise display yes
     else:
         pygame.draw.rect(screenDisplay, grey,(75,515,74,25))
         text = font.render('Yes', 1, (black))
@@ -197,26 +199,34 @@ def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos):
     #If the user clicked the start button
     elif start.collidepoint(pos):
         stopped = False
+        #Check if  the grid is empty
         empty = emptyValidate()
+        #If the grid isn't empty
         if empty == False:
             #While the user hasn't clicked the stop button
             while not stopped:
                     #Run the pattern on the grid through the rules
                     stopped = startRun(grid, stop, sizeOfGridValue)
+        #If the grid is empty
         else:
             closed = False
             while not closed:
+                #Display an error message
                 closed = emptyMessage()
     #If the user clicked the step button
     elif step.collidepoint(pos):
         stopped = False
+        #Check if the grid is empty
         empty = emptyValidate()
+        #If the grid isn't empty
         if empty == False:
             #Step through the pattern once
             stepRun(grid, sizeOfGridValue)
+        #If the grid is empty
         else:
             closed = False
             while not closed:
+                #Display an error message
                 closed = emptyMessage()
     #If the user clicked the clear button
     elif clear.collidepoint(pos):
@@ -514,31 +524,43 @@ def startRun(grid, stop, sizeOfGridValue):
         #Make the grid equal to the temporary  grid
         grid = tempGrid
 
-        #
+        #Run through each square in the squareList
         for row in range(len(squareList)):
             for col in range(len(squareList[row])):
+                #If the cell in the grid at the same position of the square is
+                #alive
                 if grid[row][col] == '*':
+                    #The square becomes red
                     squareList[row][col].colour = red
                     squareList[row][col].image.fill(red)
+                #If the cell is dead
                 else:
+                    #The square becomes white
                     squareList[row][col].colour = white
                     squareList[row][col].image.fill(white)
 
+        #For each square in the squareList
         for row in range(len(squareList)):
             for col in range(len(squareList[row])):
+                #Display it on the screen
                 screenDisplay.blit(squareList[row][col].image, squareList[row][col].rect)
 
         global generations
 
+        #Add 1 to the generations
         generations += 1
 
+        #Display the number of generations onto the screen
         pygame.draw.rect(screenDisplay, grey,(125,490,74,25))
         text = font.render(str(generations), 1, (black))
         textpos = (125,490)
         screenDisplay.blit(text, textpos)
 
         global stable
+        #If the pattern is not already stable
         if stable == False:
+            #Check if the pattern on the grid is the same as it was before
+            #running through the algorithm
             if grid == startGrid:
                 stable = True
                 pygame.draw.rect(screenDisplay, grey,(75,515,74,25))
@@ -868,9 +890,6 @@ def patternMenu():
         clock.tick(11)
 
 def patterns(x):
-    text = font.render(x, 1, black)
-    textpos = (65,25)
-    screenDisplay.blit(text, textpos)
     clearGrid()
     global sizeOfGridValue, squareList
     if x == 'blinker':
@@ -914,9 +933,6 @@ def patterns(x):
                 squareList[row][col].image.fill(white)
 
     return squareList, sizeOfGridValue
-
-    pygame.display.update()
-    clock.tick(11)
 
 def blinker():
     pattern = []

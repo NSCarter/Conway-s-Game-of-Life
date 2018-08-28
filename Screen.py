@@ -144,12 +144,13 @@ def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, spee
             chosen, sizeOfGridValue = sizeOfGridMenu(sizeOfGridValue, pos)
         gridSetup(sizeOfGridValue)
     elif start.collidepoint(pos):
-        print 'Start'
-        run(grid)
+        stopped = False
+        while not stopped:
+            stopped = startRun(grid, stop)
     elif stop.collidepoint(pos):
         print 'Stop'
     elif step.collidepoint(pos):
-        print 'Step'
+        stepRun(grid)
     elif clear.collidepoint(pos):
         clearGrid()
     else:
@@ -166,6 +167,46 @@ def speedMenu(speedValue, pos):
                 end = True
                 pygame.display.quit()
                 quit()
+
+        #Clicked
+            pos = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if speed1.collidepoint(pos):
+                    speedValue = 1
+                    chosen = True
+                    return chosen, speedValue
+                elif speed2.collidepoint(pos):
+                    speedValue = 2
+                    chosen = True
+                    return chosen, speedValue
+                elif speed3.collidepoint(pos):
+                    speedValue = 3
+                    chosen = True
+                    return chosen, speedValue
+                elif speed4.collidepoint(pos):
+                    speedValue = 4
+                    chosen = True
+                    return chosen, speedValue
+                elif speed5.collidepoint(pos):
+                    speedValue = 5
+                    chosen = True
+                    return chosen, speedValue
+                elif speed6.collidepoint(pos):
+                    speedValue = 6
+                    chosen = True
+                    return chosen, speedValue
+                elif speed7.collidepoint(pos):
+                    speedValue = 7
+                    chosen = True
+                    return chosen, speedValue
+                elif speed8.collidepoint(pos):
+                    speedValue = 8
+                    chosen = True
+                    return chosen, speedValue
+                elif speed9.collidepoint(pos):
+                    speedValue = 9
+                    chosen = True
+                    return chosen, speedValue
 
         #Boxes
         pygame.draw.rect(screenDisplay, white,(405,205,190,190))
@@ -218,46 +259,6 @@ def speedMenu(speedValue, pos):
         textpos = (550,345)
         screenDisplay.blit(text, textpos)
 
-        #Clicked
-        pos = pygame.mouse.get_pos()
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if speed1.collidepoint(pos):
-                speedValue = 1
-                chosen = True
-                return chosen, speedValue
-            elif speed2.collidepoint(pos):
-                speedValue = 2
-                chosen = True
-                return chosen, speedValue
-            elif speed3.collidepoint(pos):
-                speedValue = 3
-                chosen = True
-                return chosen, speedValue
-            elif speed4.collidepoint(pos):
-                speedValue = 4
-                chosen = True
-                return chosen, speedValue
-            elif speed5.collidepoint(pos):
-                speedValue = 5
-                chosen = True
-                return chosen, speedValue
-            elif speed6.collidepoint(pos):
-                speedValue = 6
-                chosen = True
-                return chosen, speedValue
-            elif speed7.collidepoint(pos):
-                speedValue = 7
-                chosen = True
-                return chosen, speedValue
-            elif speed8.collidepoint(pos):
-                speedValue = 8
-                chosen = True
-                return chosen, speedValue
-            elif speed9.collidepoint(pos):
-                speedValue = 9
-                chosen = True
-                return chosen, speedValue
-
         pygame.display.update()
         clock.tick(11)
 
@@ -289,7 +290,7 @@ def squareChange(pos):
                     squareList[row][col].colour = white
                     squareList[row][col].image.fill(white)
 
-def run(grid):
+def startRun(grid, stop):
     end = False
 
     while not end:
@@ -299,8 +300,213 @@ def run(grid):
                 pygame.display.quit()
                 quit()
 
+            pos = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if stop.collidepoint(pos):
+                    stopped = True
+                    return stopped
+
+        print grid
+
         del grid[:]
 
+        for i in range(sizeOfGridValue):
+            grid.append([])
+
+        for row in range(len(squareList)):
+            for col in range(len(squareList[row])):
+                if squareList[row][col].colour == red:
+                    grid[row].append('*')
+                else:
+                    grid[row].append(' ')
+
+        tempGrid = []
+
+        for row in range(sizeOfGridValue):
+            tempGrid.append([])
+            for column in range(10):
+                tempGrid[row].append(' ')
+
+        for row in range(10):
+            for column in range(10):
+                count = 0
+                if grid[row][column] == '*':
+                    if row+1 < 10:
+                        if grid[row+1][column] == '*':
+                            count += 1
+                    if row-1 > -1:
+                        if grid[row-1][column] == '*':
+                            count += 1
+                    if column+1 < 10:
+                        if grid[row][column+1] == '*':
+                            count += 1
+                    if column-1 > -1:
+                        if grid[row][column-1] == '*':
+                            count += 1
+                    if column+1 < 10 and row+1 < 10:
+                        if grid[row+1][column+1] == '*':
+                            count += 1
+                    if row-1 > -1 and column-1 > -1:
+                        if grid[row-1][column-1] == '*':
+                            count += 1
+                    if row+1 < 10 and column-1 > -1:
+                        if grid[row+1][column-1] == '*':
+                            count += 1
+                    if row-1 > -1 and column+1 < 10:
+                        if grid[row-1][column+1] == '*':
+                            count += 1
+
+                    if count == 2 or count == 3:
+                        tempGrid[row][column] = '*'
+                    else:
+                        tempGrid[row][column] = ' '
+
+                elif grid[row][column] == ' ':
+                    if row+1 < 10:
+                        if grid[row+1][column] == '*':
+                            count += 1
+                    if row-1 > -1:
+                        if grid[row-1][column] == '*':
+                            count += 1
+                    if column+1 < 10:
+                        if grid[row][column+1] == '*':
+                            count += 1
+                    if column-1 > -1:
+                        if grid[row][column-1] == '*':
+                            count += 1
+                    if column+1 < 10 and row+1 < 10:
+                        if grid[row+1][column+1] == '*':
+                            count += 1
+                    if row-1 > -1 and column-1 > -1:
+                        if grid[row-1][column-1] == '*':
+                            count += 1
+                    if row+1 < 10 and column-1 > -1:
+                        if grid[row+1][column-1] == '*':
+                            count += 1
+                    if row-1 > -1 and column+1 < 10:
+                        if grid[row-1][column+1] == '*':
+                            count += 1
+
+                    if count == 3:
+                        tempGrid[row][column] = '*'
+                    else:
+                        tempGrid[row][column] = ' '
+
+        grid = []
+
+        grid = tempGrid
+
+        for row in range(len(squareList)):
+            for col in range(len(squareList[row])):
+                if grid[row][col] == '*':
+                    squareList[row][col].colour = red
+                    squareList[row][col].image.fill(red)
+                else:
+                    squareList[row][col].colour = white
+                    squareList[row][col].image.fill(white)
+
+        for row in range(len(squareList)):
+            for col in range(len(squareList[row])):
+                screenDisplay.blit(squareList[row][col].image, squareList[row][col].rect)
+
+        time.sleep(9-speedValue)
+
+        pygame.display.update()
+        clock.tick(11)
+
+def clearGrid():
+    for row in range(len(squareList)):
+        for col in range(len(squareList[row])):
+            squareList[row][col].colour = white
+            squareList[row][col].image.fill(white)
+
+
+def sizeOfGridMenu(sizeOfGridValue, pos):
+    time.sleep(0.1)
+    end = False
+
+    while not end:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                end = True
+                pygame.display.quit()
+                quit()
+
+            pos = pygame.mouse.get_pos()
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if size5.collidepoint(pos):
+                    sizeOfGridValue = 5
+                    chosen  = True
+    ##                clearGrid()
+                    squareList = []
+                    return chosen, sizeOfGridValue
+                elif size10.collidepoint(pos):
+                    sizeOfGridValue = 10
+                    chosen  = True
+    ##                squareList.empty()
+                    squareList = []
+                    return chosen, sizeOfGridValue
+                elif size25.collidepoint(pos):
+                    sizeOfGridValue = 25
+                    chosen  = True
+                    squareList = []
+                    return chosen, sizeOfGridValue
+                elif size50.collidepoint(pos):
+                    sizeOfGridValue = 50
+                    chosen  = True
+                    squareList.empty()
+                    return chosen, sizeOfGridValue
+                elif size75.collidepoint(pos):
+                    sizeOfGridValue = 75
+                    chosen  = True
+                    squareList.empty()
+                    return chosen, sizeOfGridValue
+                elif size100.collidepoint(pos):
+                    sizeOfGridValue = 100
+                    chosen  = True
+                    squareList.empty()
+                    return chosen, sizeOfGridValue
+
+        #Boxes
+        pygame.draw.rect(screenDisplay, white,(325,205,330,190))
+        pygame.draw.rect(screenDisplay, black,(325,205,330,190),3)
+        size5 = pygame.draw.rect(screenDisplay, white,(335,215,150,50))
+        pygame.draw.rect(screenDisplay, black,(335,215,150,50),3)
+        size10 = pygame.draw.rect(screenDisplay, white,(495,215,150,50))
+        pygame.draw.rect(screenDisplay, black,(495,215,150,50),3)
+        size25 = pygame.draw.rect(screenDisplay, white,(335,275,150,50))
+        pygame.draw.rect(screenDisplay, black,(335,275,150,50),3)
+        size50 = pygame.draw.rect(screenDisplay, white,(495,275,150,50))
+        pygame.draw.rect(screenDisplay, black,(495,275,150,50),3)
+        size75 = pygame.draw.rect(screenDisplay, white,(335,335,150,50))
+        pygame.draw.rect(screenDisplay, black,(335,335,150,50),3)
+        size100 = pygame.draw.rect(screenDisplay, white,(495,335,150,50))
+        pygame.draw.rect(screenDisplay, black,(495,335,150,50),3)
+
+        #Text
+        text = sizeFont.render('5 x 5',1, (black))
+        textpos = (373,225)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('10 x 10',1, (black))
+        textpos = (515,225)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('25 x 25',1, (black))
+        textpos = (355,285)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('50 x 50',1, (black))
+        textpos = (515,285)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('75 x 75',1, (black))
+        textpos = (355,345)
+        screenDisplay.blit(text, textpos)
+        text = sizeFont.render('100 x 100',1, (black))
+        textpos = (496,345)
+        screenDisplay.blit(text, textpos)
+
+        pygame.display.update()
+        clock.tick(11)
+
+def stepRun(grid):
         for i in range(sizeOfGridValue):
             grid.append([])
 
@@ -386,8 +592,6 @@ def run(grid):
         del grid [:]
         grid = tempGrid
 
-        del liveCells[:]
-
         for row in range(len(squareList)):
             for col in range(len(squareList[row])):
                 if grid[row][col] == '*':
@@ -396,98 +600,6 @@ def run(grid):
                 else:
                     squareList[row][col].colour = white
                     squareList[row][col].image.fill(white)
-
-def clearGrid():
-    for row in range(len(squareList)):
-        for col in range(len(squareList[row])):
-            squareList[row][col].colour = white
-            squareList[row][col].image.fill(white)
-
-
-def sizeOfGridMenu(sizeOfGridValue, pos):
-    time.sleep(0.1)
-    end = False
-
-    while not end:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                end = True
-                pygame.display.quit()
-                quit()
-
-        #Boxes
-        pygame.draw.rect(screenDisplay, white,(325,205,330,190))
-        pygame.draw.rect(screenDisplay, black,(325,205,330,190),3)
-        size5 = pygame.draw.rect(screenDisplay, white,(335,215,150,50))
-        pygame.draw.rect(screenDisplay, black,(335,215,150,50),3)
-        size10 = pygame.draw.rect(screenDisplay, white,(495,215,150,50))
-        pygame.draw.rect(screenDisplay, black,(495,215,150,50),3)
-        size25 = pygame.draw.rect(screenDisplay, white,(335,275,150,50))
-        pygame.draw.rect(screenDisplay, black,(335,275,150,50),3)
-        size50 = pygame.draw.rect(screenDisplay, white,(495,275,150,50))
-        pygame.draw.rect(screenDisplay, black,(495,275,150,50),3)
-        size75 = pygame.draw.rect(screenDisplay, white,(335,335,150,50))
-        pygame.draw.rect(screenDisplay, black,(335,335,150,50),3)
-        size100 = pygame.draw.rect(screenDisplay, white,(495,335,150,50))
-        pygame.draw.rect(screenDisplay, black,(495,335,150,50),3)
-
-        #Text
-        text = sizeFont.render('5 x 5',1, (black))
-        textpos = (373,225)
-        screenDisplay.blit(text, textpos)
-        text = sizeFont.render('10 x 10',1, (black))
-        textpos = (515,225)
-        screenDisplay.blit(text, textpos)
-        text = sizeFont.render('25 x 25',1, (black))
-        textpos = (355,285)
-        screenDisplay.blit(text, textpos)
-        text = sizeFont.render('50 x 50',1, (black))
-        textpos = (515,285)
-        screenDisplay.blit(text, textpos)
-        text = sizeFont.render('75 x 75',1, (black))
-        textpos = (355,345)
-        screenDisplay.blit(text, textpos)
-        text = sizeFont.render('100 x 100',1, (black))
-        textpos = (496,345)
-        screenDisplay.blit(text, textpos)
-
-        pos = pygame.mouse.get_pos()
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if size5.collidepoint(pos):
-                sizeOfGridValue = 5
-                chosen  = True
-##                clearGrid()
-                squareList = []
-                return chosen, sizeOfGridValue
-            elif size10.collidepoint(pos):
-                sizeOfGridValue = 10
-                chosen  = True
-##                squareList.empty()
-                squareList = []
-                return chosen, sizeOfGridValue
-            elif size25.collidepoint(pos):
-                sizeOfGridValue = 25
-                chosen  = True
-                squareList = []
-                return chosen, sizeOfGridValue
-            elif size50.collidepoint(pos):
-                sizeOfGridValue = 50
-                chosen  = True
-                squareList.empty()
-                return chosen, sizeOfGridValue
-            elif size75.collidepoint(pos):
-                sizeOfGridValue = 75
-                chosen  = True
-                squareList.empty()
-                return chosen, sizeOfGridValue
-            elif size100.collidepoint(pos):
-                sizeOfGridValue = 100
-                chosen  = True
-                squareList.empty()
-                return chosen, sizeOfGridValue
-
-        pygame.display.update()
-        clock.tick(11)
 
 def main():
     end = False
@@ -503,16 +615,10 @@ def main():
         menuBackground()
         nameOfPattern, speed, sizeOfGrid, start, stop, step, clear = menuBoxes()
         menuText()
-##        squareList.draw(screenDisplay)
+
         for row in range(len(squareList)):
             for col in range(len(squareList[row])):
                 screenDisplay.blit(squareList[row][col].image, squareList[row][col].rect)
-
-##    for row in range(len(BlockList)):
-##        for col in range(len(BlockList[row])):
-####            print BlockList[row][col]
-####            BlockList[row][col].draw()
-##            screen.blit(BlockList[row][col].image, BlockList[row][col].rect)
 
         pos = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:

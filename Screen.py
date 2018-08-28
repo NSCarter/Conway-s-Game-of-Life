@@ -12,9 +12,11 @@ Grid lines maybe
 More patterns
 '''
 
+#Import the pygame and time modules
 import pygame
 import time
 
+#Initialise pygame
 pygame.init()
 
 #Size of the screen
@@ -39,6 +41,8 @@ gridWidth = 600
 #Grids used for running through the algorithm
 grid = []
 tempGrid = []
+#The number of generations is initially set to 0
+generations = 0
 
 #Set the size of the screen, the name of the screen and define the clock
 screenDisplay = pygame.display.set_mode((displayWidth, displayHeight))
@@ -76,6 +80,7 @@ def menuBackground():
     pygame.draw.line(screenDisplay, black,(0,90),(200,90),3)
     pygame.draw.line(screenDisplay, black,(0,260),(200,260),3)
 
+#The boxes in the menu
 def menuBoxes():
     #Name of pattern
     nameOfPattern = pygame.draw.rect(screenDisplay, white,(50,20,100,50))
@@ -104,6 +109,7 @@ def menuBoxes():
     pygame.draw.rect(screenDisplay, black,(62,435,75,25),3)
     return nameOfPattern, speed, sizeOfGrid, start, stop, step, clear
 
+#The text in the menu boxes
 def menuText():
     #Name of pattern
     text = font.render("Name of", 1, black)
@@ -142,43 +148,65 @@ def menuText():
     text = font.render("Clear", 1, (black))
     textpos = (77,440)
     screenDisplay.blit(text, textpos)
+    text = font.render("Generations:", 1, (black))
+    textpos = (5,490)
+    screenDisplay.blit(text, textpos)
+    text = font.render(str(generations), 1, (black))
+    textpos = (125,490)
+    screenDisplay.blit(text, textpos)
 
+#Function deciding which button has been clicked and what to do next
 def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, speedValue, sizeOfGridValue, squareList):
     #If the nameOfPattern button was clicked
     if nameOfPattern.collidepoint(pos):
         chosen = False
         #While the user hasn't chosen a pattern
         while chosen == False:
-##            chosen, squareList = patternMenu()
             #Display the pattern menu
             chosen = patternMenu()
+    #If the speed button was clicked
     elif speed.collidepoint(pos):
         chosen = False
+        #While the user hasn't chosen a speed
         while chosen == False:
+            #Display the speed menu
             chosen, speedValue = speedMenu(speedValue, pos)
+    #If the user clicked the size of grid button
     elif sizeOfGrid.collidepoint(pos):
         chosen = False
+        #While the user hasn't chosen a size
         while chosen == False:
+            #Display the size of grid menu
             chosen, sizeOfGridValue, squareList = sizeOfGridMenu(sizeOfGridValue, pos)
+        #Run the grid setup again the the new size of grid value to change the number
+        #of squares on the grid
         gridSetup(sizeOfGridValue, squareList)
+    #If the user clicked the start button
     elif start.collidepoint(pos):
         stopped = False
+        #While the user hasn't clicked the stop button
         while not stopped:
+            #Run the pattern on the grid through the rules
             stopped = startRun(grid, stop, sizeOfGridValue)
-    elif stop.collidepoint(pos):
-        print 'Stop'
+##    elif stop.collidepoint(pos):
+##        print 'Stop'
+    #If the user clicked the step button
     elif step.collidepoint(pos):
+        #Step through the pattern once
         stepRun(grid, sizeOfGridValue)
+    #If the user clicked the clear button
     elif clear.collidepoint(pos):
+        #Clear the grid
         clearGrid()
-    else:
-        print 'False'
+    #Return the speed value, the size of grid value and the squarelist
     return speedValue, sizeOfGridValue, squareList
 
+#The menu displayed when the clicks the speed button
 def speedMenu(speedValue, pos):
     time.sleep(0.1)
     end = False
 
+    #While the user hasn't closed the program
     while not end:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -186,12 +214,17 @@ def speedMenu(speedValue, pos):
                 pygame.display.quit()
                 quit()
 
-        #Clicked
+            #Find the position of the mouse
             pos = pygame.mouse.get_pos()
+            #If the left mouse button was clicked
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                #If the user clicked the 1 button
                 if speed1.collidepoint(pos):
+                    #Change the speed value to one
                     speedValue = 1
+                    #Set chosen to true
                     chosen = True
+                    #Return chosen and the new speed value
                     return chosen, speedValue
                 elif speed2.collidepoint(pos):
                     speedValue = 2
@@ -277,17 +310,21 @@ def speedMenu(speedValue, pos):
         textpos = (550,345)
         screenDisplay.blit(text, textpos)
 
+        #Update the screen
         pygame.display.update()
         clock.tick(11)
 
+#Function to setup the grid to create the white squares
 def gridSetup(sizeOfGridValue, squareList):
     xPos = 0
     yPos = 0
     row = 0
     column = 0
     for i in range (sizeOfGridValue):
+        #Create an empty two dimensional array
         squareList.append([])
         for j in range (sizeOfGridValue):
+            #If you have reached the end of the row
             if column * (gridWidth/sizeOfGridValue) > gridWidth - (gridWidth/sizeOfGridValue):
                 row += 1
                 column = 0
@@ -425,6 +462,15 @@ def startRun(grid, stop, sizeOfGridValue):
             for col in range(len(squareList[row])):
                 screenDisplay.blit(squareList[row][col].image, squareList[row][col].rect)
 
+        global generations
+
+        generations += 1
+
+        pygame.draw.rect(screenDisplay, grey,(125,490,74,25))
+        text = font.render(str(generations), 1, (black))
+        textpos = (125,490)
+        screenDisplay.blit(text, textpos)
+
         time.sleep(9-speedValue)
 
         pygame.display.update()
@@ -435,6 +481,8 @@ def clearGrid():
         for col in range(len(squareList[row])):
             squareList[row][col].colour = white
             squareList[row][col].image.fill(white)
+    global generations
+    generations = 0
 
 
 def sizeOfGridMenu(sizeOfGridValue, pos):
@@ -616,6 +664,9 @@ def stepRun(grid, sizeOfGridValue):
                 else:
                     squareList[row][col].colour = white
                     squareList[row][col].image.fill(white)
+
+        global generations
+        generations += 1
 
 def patternMenu():
     time.sleep(0.1)
@@ -904,7 +955,7 @@ def main():
             if event.type == pygame.QUIT:
                 end = True
 
-        global speedValue, sizeOfGridValue, squareList
+        global speedValue, sizeOfGridValue, squareList, generations
 
         menuBackground()
         nameOfPattern, speed, sizeOfGrid, start, stop, step, clear = menuBoxes()

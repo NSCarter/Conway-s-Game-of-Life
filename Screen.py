@@ -56,7 +56,7 @@ class Square(pygame.sprite.Sprite):
         self.image = pygame.Surface((self.height/2,self.width/2))
 
 #List of all the squares in the grid
-squareList = pygame.sprite.Group()
+squareList = []
 
 def menuBackground():
     pygame.draw.rect(screenDisplay, grey, (0,0,200,600))
@@ -145,7 +145,7 @@ def button(nameOfPattern, speed, sizeOfGrid, start, stop, step, clear, pos, spee
         gridSetup(sizeOfGridValue)
     elif start.collidepoint(pos):
         print 'Start'
-        startRun(grid)
+        run(grid)
     elif stop.collidepoint(pos):
         print 'Stop'
     elif step.collidepoint(pos):
@@ -262,148 +262,61 @@ def speedMenu(speedValue, pos):
         clock.tick(11)
 
 def gridSetup(sizeOfGridValue):
+    xPos = 0
+    yPos = 0
     row = 0
     column = 0
-    x = 0
-    y = 0
-    for i in range(sizeOfGridValue**2):
-        if column * (gridWidth/sizeOfGridValue) > gridWidth - (gridWidth/sizeOfGridValue):
-            row += 1
-            column = 0
-        x = 202 + (column * (gridWidth/sizeOfGridValue))
-        y = row * (displayHeight/sizeOfGridValue)
-        column += 1
-        squareList.add(Square(x,y,gridWidth/sizeOfGridValue,displayHeight/sizeOfGridValue,white))
-
-##def gridSetup(sizeOfGridValue):
-##    rowCount = 0
-##    columnCount = 0
-##    for row in range(sizeOfGridValue):
-##        rowCount = 0
-##        for column in range(sizeOfGridValue):
-##            x = 202+(rowCount*(gridWidth/sizeOfGridValue))
-##            y = columnCount*(gridWidth/sizeOfGridValue)
-##            rowCount+=1
-##            squareList.add(Square(x,y,gridWidth/sizeOfGridValue,displayHeight/sizeOfGridValue,white))
-##        columnCount+=1
+    for i in range (sizeOfGridValue):
+        squareList.append([])
+        for j in range (sizeOfGridValue):
+            if column * (gridWidth/sizeOfGridValue) > gridWidth - (gridWidth/sizeOfGridValue):
+                row += 1
+                column = 0
+            xPos = 202 + (column * (gridWidth/sizeOfGridValue))
+            yPos = row * (displayHeight/sizeOfGridValue)
+            column += 1
+            squareList[i].append(Square(xPos,yPos,gridWidth/sizeOfGridValue,displayHeight/sizeOfGridValue,white))
 
 def squareChange(pos):
-    for Square in squareList:
-        if Square.rect.collidepoint(pos):
-            Square.animate = True
-            if Square.colour == white:
-                Square.colour = red
-                Square.image.fill(red)
-            elif Square.colour == red:
-                Square.colour = white
-                Square.image.fill(white)
+    for row in range(len(squareList)):
+        for col in range(len(squareList[row])):
+            if squareList[row][col].rect.collidepoint(pos):
+                squareList[row][col].animate = True
+                if squareList[row][col].colour == white:
+                    squareList[row][col].colour = red
+                    squareList[row][col].image.fill(red)
+                elif squareList[row][col].colour == red:
+                    squareList[row][col].colour = white
+                    squareList[row][col].image.fill(white)
 
-def startRun(grid):
-##    end = False
-##
-##    while not end:
-##        for event in pygame.event.get():
-##            if event.type == pygame.QUIT:
-##                end = True
-##                pygame.display.quit()
-##                quit()
+def run(grid):
+    end = False
 
-##        for Square in squareList:
-##            if Square.colour == red:
-##                print '*'
-##            else:
-##                print '-'
+    while not end:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                end = True
+                pygame.display.quit()
+                quit()
 
-        del liveCells[:]
+        del grid[:]
 
-        for Square in squareList:
-            if Square.colour == red:
-                liveCells.append('*')
-            else:
-                liveCells.append(' ')
-
-        for row in range(10):
+        for i in range(sizeOfGridValue):
             grid.append([])
-            for column in range(10):
-                grid[row].append(liveCells[column*row])
 
-##        print liveCells
-##        print grid
+        for row in range(len(squareList)):
+            for col in range(len(squareList[row])):
+                if squareList[row][col].colour == red:
+                    grid[row].append('*')
+                else:
+                    grid[row].append(' ')
 
         del tempGrid[:]
 
-        for row in range(10):
+        for row in range(sizeOfGridValue):
             tempGrid.append([])
             for column in range(10):
                 tempGrid[row].append(' ')
-
-##        for row in range(10):
-##            for column in range(10):
-##                count = 0
-##                if squareList[row][column] == '*':
-##                    if row+1 < 10:
-##                        if squareList[row+1][column] == '*':
-##                            count += 1
-##                    if row-1 > -1:
-##                        if squareList[row-1][column] == '*':
-##                            count += 1
-##                    if column+1 < 10:
-##                        if squareList[row][column+1] == '*':
-##                            count += 1
-##                    if column-1 > -1:
-##                        if squareList[row][column-1] == '*':
-##                            count += 1
-##                    if column+1 < 10 and row+1 < 10:
-##                        if squareList[row+1][column+1] == '*':
-##                            count += 1
-##                    if row-1 > -1 and column-1 > -1:
-##                        if squareList[row-1][column-1] == '*':
-##                            count += 1
-##                    if row+1 < 10 and column-1 > -1:
-##                        if squareList[row+1][column-1] == '*':
-##                            count += 1
-##                    if row-1 > -1 and column+1 < 10:
-##                        if squareList[row-1][column+1] == '*':
-##                            count += 1
-##
-##                    if count == 2 or count == 3:
-##                        tempGrid[row][column] = '*'
-##                    else:
-##                        tempGrid[row][column] = ' '
-##
-##                elif squareList[row][column] == ' ':
-##                    if row+1 < 10:
-##                        if squareList[row+1][column] == '*':
-##                            count += 1
-##                    if row-1 > -1:
-##                        if squareList[row-1][column] == '*':
-##                            count += 1
-##                    if column+1 < 10:
-##                        if squareList[row][column+1] == '*':
-##                            count += 1
-##                    if column-1 > -1:
-##                        if squareList[row][column-1] == '*':
-##                            count += 1
-##                    if column+1 < 10 and row+1 < 10:
-##                        if squareList[row+1][column+1] == '*':
-##                            count += 1
-##                    if row-1 > -1 and column-1 > -1:
-##                        if squareList[row-1][column-1] == '*':
-##                            count += 1
-##                    if row+1 < 10 and column-1 > -1:
-##                        if squareList[row+1][column-1] == '*':
-##                            count += 1
-##                    if row-1 > -1 and column+1 < 10:
-##                        if squareList[row-1][column+1] == '*':
-##                            count += 1
-##
-##                    if count == 3:
-##                        tempGrid[row][column] = '*'
-##                    else:
-##                        tempGrid[row][column] = ' '
-##
-##        del grid [:]
-##        grid = tempGrid
 
         for row in range(10):
             for column in range(10):
@@ -472,98 +385,24 @@ def startRun(grid):
 
         del grid [:]
         grid = tempGrid
-##        print grid
 
         del liveCells[:]
-        squareList.empty()
 
-        cells = []
-
-        for row in range(10):
-            for column in range(10):
-                cells.append(grid[row][column])
-
-        print grid
-        print cells
-##        for i in range(grid):
-##            if grid[i] == ' ':
-##                Square[row].colour = white
-##                Square[i].image.fill(white)
-##            else:
-##                Square[i].colour = red
-##                Square.image.fill(red)
-        count = 0
-        for Square in squareList:
-            print grid[count]
-            if grid[count] == ' ':
-                Square.animate = True
-                Square.colour = white
-                Square.image.fill(white)
-            else:
-                Square.animate = True
-                Square.colour = red
-                Square.image.fill(red)
-            count +=1
-
-##    for Square in squareList:
-##        Square.colour = white
-##        Square.image.fill(white)
-
-
-##        row = 0
-##        column = 0
-##        x = 0
-##        y = 0
-##        for i in range(sizeOfGridValue**2):
-##            if column * (gridWidth/sizeOfGridValue) > gridWidth - (gridWidth/sizeOfGridValue):
-##                row += 1
-##                column = 0
-##            x = 202 + (column * (gridWidth/sizeOfGridValue))
-##            y = row * (displayHeight/sizeOfGridValue)
-##            column += 1
-##            if grid[row][column] == ' ':
-##                colour = white
-##            else:
-##                colour = red
-##            squareList.add(Square(x,y,gridWidth/sizeOfGridValue,displayHeight/sizeOfGridValue,colour))
-
-##    for Square in squareList:
-##        if Square.rect.collidepoint(pos):
-##            Square.animate = True
-##            if Square.colour == white:
-##                Square.colour = red
-##                Square.image.fill(red)
-##            elif Square.colour == red:
-##                Square.colour = white
-##                Square.image.fill(white)
-
-
-
-##        for Square in squareList:
-##            if Square.colour == red:
-##                liveCells.append('*')
-##            else:
-##                liveCells.append(' ')
-##
-##        for row in range(10):
-##            grid.append([])
-##            for column in range(10):
-##                grid[row].append(liveCells[column*row])
-##
-##        print liveCells
-##        print grid
-##
-##        del tempGrid[:]
-##
-##        for row in range(10):
-##            tempGrid.append([])
-##            for column in range(10):
-##                tempGrid[row].append(' ')
+        for row in range(len(squareList)):
+            for col in range(len(squareList[row])):
+                if grid[row][col] == '*':
+                    squareList[row][col].colour = red
+                    squareList[row][col].image.fill(red)
+                else:
+                    squareList[row][col].colour = white
+                    squareList[row][col].image.fill(white)
 
 def clearGrid():
-    for Square in squareList:
-        Square.colour = white
-        Square.image.fill(white)
+    for row in range(len(squareList)):
+        for col in range(len(squareList[row])):
+            squareList[row][col].colour = white
+            squareList[row][col].image.fill(white)
+
 
 def sizeOfGridMenu(sizeOfGridValue, pos):
     time.sleep(0.1)
@@ -617,17 +456,19 @@ def sizeOfGridMenu(sizeOfGridValue, pos):
             if size5.collidepoint(pos):
                 sizeOfGridValue = 5
                 chosen  = True
-                squareList.empty()
+##                clearGrid()
+                squareList = []
                 return chosen, sizeOfGridValue
             elif size10.collidepoint(pos):
                 sizeOfGridValue = 10
                 chosen  = True
-                squareList.empty()
+##                squareList.empty()
+                squareList = []
                 return chosen, sizeOfGridValue
             elif size25.collidepoint(pos):
                 sizeOfGridValue = 25
                 chosen  = True
-                squareList.empty()
+                squareList = []
                 return chosen, sizeOfGridValue
             elif size50.collidepoint(pos):
                 sizeOfGridValue = 50
@@ -662,7 +503,16 @@ def main():
         menuBackground()
         nameOfPattern, speed, sizeOfGrid, start, stop, step, clear = menuBoxes()
         menuText()
-        squareList.draw(screenDisplay)
+##        squareList.draw(screenDisplay)
+        for row in range(len(squareList)):
+            for col in range(len(squareList[row])):
+                screenDisplay.blit(squareList[row][col].image, squareList[row][col].rect)
+
+##    for row in range(len(BlockList)):
+##        for col in range(len(BlockList[row])):
+####            print BlockList[row][col]
+####            BlockList[row][col].draw()
+##            screen.blit(BlockList[row][col].image, BlockList[row][col].rect)
 
         pos = pygame.mouse.get_pos()
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
